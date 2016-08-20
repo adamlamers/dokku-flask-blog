@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}User List{% endblock %}
+
+{% block sidebar %}
+<div class="content">
+    <div class="panel">
+        <div class="panel-heading">
+            Options
+        </div>
+
+        <a class="panel-block" href="{{ url_for('admin_user_create') }}" id="action-create-user">
+            <span class="panel-icon">
+                <i class="fa fa-plus"></i>
+            </span>
+            Create New User
+        </a>
+
+        <a class="panel-block" href="javascript:void(0)" id="action-delete-user">
+            <span class="panel-icon">
+                <i class="fa fa-minus"></i>
+            </span>
+            Delete User
+        </a>
+
+        <a class="panel-block" href="javascript:void(0)" id="action-edit-user">
+            <span class="panel-icon">
+                <i class="fa fa-pencil"></i>
+            </span>
+            Edit User
+        </a>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <table class="table is-striped">
+        <thead>
+            <tr>
+                <td>User ID</td>
+                <td>Name</td>
+                <td>Date Created</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="user-row">
+                <td class="user-id">{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.created_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="has-text-centered" colspan="3"> No Users To Display </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(function() {
+    var activeRow = null;
+    var activeRowId = null;
+
+    $(".user-row").click(function(e) {
+        var row = $(this);
+
+        if (activeRow)
+            activeRow.removeClass("table-row-active")
+
+        row.addClass("table-row-active");
+        id = row.find(".user-id").html();
+        activeRow = row;
+        activeRowId = id;
+    });
+
+    $("#action-delete-user").click(function(e) {
+        if(activeRowId)
+        {
+            if(confirm("Are you sure you want to delete user " + activeRowId + "?"))
+            {
+                $.post("{{ url_for('admin_user_delete') }}", { id: activeRowId }).done(function(e) {
+                    activeRow.remove();
+                })
+            }
+        }
+        else
+        {
+            alert("Select a user to delete.");
+        }
+    });
+});
+</script>
+{% endblock %}

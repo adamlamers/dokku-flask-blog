@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %} New Post {% endblock %}
+
+{% block sidebar %}
+<div class="content">
+    <div class="panel">
+        <div class="panel-heading">
+            Options
+        </div>
+
+        <a class="panel-block" href="#">
+            <span class="panel-icon">
+                <i class="fa fa-book"></i>
+            </span>
+            Save as Draft
+        </a>
+
+        <a class="panel-block" href="#">
+            <span class="panel-icon">
+                <i class="fa fa-hourglass-start"></i>
+            </span>
+            Schedule Publication
+        </a>
+
+        <a class="panel-block" href="#view-preview" id="action-preview">
+            <span class="panel-icon">
+                <i class="fa fa-eye"></i>
+            </span>
+            Preview
+        </a>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="post-form-container content">
+        <form action="{{ url_for('admin_save_post') }}" method="POST" id="post-form">
+            <label class="label">Post Title</label>
+            <p class="control">
+                {% if not editing %}
+                <input type="text" name="post-title" class="input" placeholder="No Title">
+                {% else %}
+                <input type="text" name="post-title" class="input" placeholder="No Title" value="{{ post.title }}">
+                {% endif %}
+            </p>
+            <label class="label">Short Description</label>
+            <p class="control">
+                <textarea style="height:6em" class="input" name="post-description" id="post-description-editor">{% if editing %}{{ post.description }}{% endif %}</textarea>
+            </p>
+            <textarea name="post-content" id="post-content-editor">{% if editing %}{{ post.content }}{% endif %}</textarea>
+            <p class="control">
+                {% if not editing %}
+                <input class="input" type="text" name="post-tags" placeholder="Tags">
+                {% else %}
+                <input class="input" type="text" name="post-tags" placeholder="Tags" value="{{ post.tags }}">
+                {% endif %}
+            </p>
+
+            {% if editing %}
+                <input type="hidden" name="post-edit-id" value="{{ post.id }}">
+            {% endif %}
+            <div class="has-text-right"><button class="button is-primary">Post</button></div>
+        </form>
+    </div>
+
+    <div class="box post-content" id="preview-box" style="display:none;">
+        <div class="preview-post content">
+            <a name="view-preview"></a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+
+$(function() {
+    var postEditor = new SimpleMDE({ element: document.getElementById("post-content-editor")});
+
+    $("#action-preview").click(function(e) {
+        postData = { }
+        postData['post-title'] = $("[name='post-title']").val();
+        postData['post-content'] = postEditor.value();
+
+        $.post("{{ url_for('preview') }}", postData).done(function(data) {
+            $(".preview-post").html(data);
+            $("#preview-box").show();
+        });
+    });
+});
+</script>
+{% endblock %}

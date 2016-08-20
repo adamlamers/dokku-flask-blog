@@ -1,0 +1,6 @@
+flask
+flask-login
+bcrypt
+markdown
+py-gfm
+peewee

@@ -1,0 +1,23 @@
+<div class="content">
+    <h2 class="is-2 sidebar-heading has-text-centered"><span class="has-underline">Recent Posts</span></h2>
+    <div class="columns">
+        <div class="column is-1"></div>
+        <div class="column">
+            {% for post in recent_posts %}
+                <a class="large-sidebar-link" href="{{ url_for('post', pid=post.id) }}">{{ post.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <h2 class="is-2 sidebar-heading has-text-centered"><span class="has-underline">Top Tags</span></h2>
+    <div class="columns">
+        <div class="column is-1"></div>
+        <div class="column">
+            <span class="tag is-primary">Python</span>
+            <span class="tag is-primary">C</span>
+            <span class="tag is-primary">Lottery</span>
+            <span class="tag is-primary">Flask</span>
+            <span class="tag is-primary">nginx</span>
+        </div>
+    </div>
+</div>

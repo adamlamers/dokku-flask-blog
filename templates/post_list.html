@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Post List{% endblock %}
+
+{% block sidebar %}
+<div class="content">
+    <div class="panel">
+        <div class="panel-heading">
+            Options
+        </div>
+
+        <a class="panel-block" href="{{ url_for('compose') }}">
+            <span class="panel-icon">
+                <i class="fa fa-plus"></i>
+            </span>
+            Create Post
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Post ID</td>
+                <td>Title</td>
+                <td>Date Posted</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.id }}</td>
+                <td><a href="{{ url_for('admin_edit_post', pid=post.id) }}">{{ post.title }}</a></td>
+                <td>{{ post.created_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="has-text-centered" colspan="3"> No Posts To Display </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

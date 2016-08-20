@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-4"></div>
+        <div class="column is-4">
+            <h3>Login</h3>
+            <form action="{{ url_for('do_login') }}" method="POST">
+                <p class="control">
+                    <input class="input" type="text" name="username" placeholder="Username">
+                </p>
+
+                <p class="control">
+                    <input class="input" type="password" name="password" placeholder="Password">
+                </p>
+
+                <button class="button is-primary">Login</button>
+            </form>
+        </div>
+        <div class="column is-4"></div>
+    </div>
+</div>
+{% endblock %}

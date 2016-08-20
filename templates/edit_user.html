@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %} New Post {% endblock %}
+
+{% block sidebar %}
+<div class="content">
+    <div class="panel">
+        <div class="panel-heading">
+            Options
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="content">
+        <form action="{{ url_for('admin_user_save') }}" method="POST" id="user-form">
+            <label class="label">Create User</label>
+            <p class="control">
+                <input type="text" name="user-name" class="input" placeholder="Username">
+            </p>
+            <p class="control">
+                <input class="input" type="text" name="user-password" placeholder="Password">
+            </p>
+            <div class="has-text-right"><button class="button is-primary">Save</button></div>
+        </form>
+    </div>
+
+    <div class="box" id="preview-box" style="display:none;">
+        <div class="preview-post content">
+            <a name="view-preview"></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

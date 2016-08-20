@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--
+    ╦ ╦┌─┐┬  ┬  ┌─┐  ┬┌┐┌┌─┐┌─┐┌─┐┌─┐┌┬┐┌─┐┬─┐
+    ╠═╣├┤ │  │  │ │  ││││└─┐├─┘├┤ │   │ │ │├┬┘
+    ╩ ╩└─┘┴─┘┴─┘└─┘  ┴┘└┘└─┘┴  └─┘└─┘ ┴ └─┘┴└─
+    ┬ ┬┌─┐┬  ┌─┐┌─┐┌┬┐┌─┐  ┌┬┐┌─┐  ┌┬┐┬ ┬┌─┐  ┌─┐┌─┐┬ ┬┬─┐┌─┐┌─┐  ┌─┐┌─┐┌┬┐┌─┐
+    │││├┤ │  │  │ ││││├┤    │ │ │   │ ├─┤├┤   └─┐│ ││ │├┬┘│  ├┤   │  │ │ ││├┤
+    └┴┘└─┘┴─┘└─┘└─┘┴ ┴└─┘   ┴ └─┘   ┴ ┴ ┴└─┘  └─┘└─┘└─┘┴└─└─┘└─┘  └─┘└─┘─┴┘└─┘
+
+    ┌┐ ┬ ┬  ┌─┐┌┬┐┌─┐┌┬┐  ┬  ┌─┐┌┬┐┌─┐┬─┐┌─┐
+    ├┴┐└┬┘  ├─┤ ││├─┤│││  │  ├─┤│││├┤ ├┬┘└─┐
+    └─┘ ┴   ┴ ┴─┴┘┴ ┴┴ ┴  ┴─┘┴ ┴┴ ┴└─┘┴└─└─┘
+    ╔╦╗╦╔╦╗  ┬  ┬┌─┐┌─┐┌┐┌┌─┐┌─┐
+    ║║║║ ║   │  ││  ├┤ │││└─┐├┤
+    ╩ ╩╩ ╩   ┴─┘┴└─┘└─┘┘└┘└─┘└─┘
+
+	https://adamlamers.com
+	https://github.com/adamlamers
+
+     #####    ###     #    #####
+    #     #  #   #   ##   #     #
+          # #     # # #   #
+     #####  #     #   #   ######
+    #       #     #   #   #     #
+    #        #   #    #   #     #
+    #######   ###   #####  #####
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adam's Blog :: {% block title %} UNDEFINED {%endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/simplemde.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/highlight/monokai-sublime.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" media="all">
+</head>
+
+<body>
+    <section class="section header">
+        <nav class="nav">
+            <div class="nav-left">
+                <a class="nav-item is-brand">
+                    <span class="logo-text">Adam's Blog ::</span>
+                </a>
+                <a class="nav-item is-tab" href="/">
+                    Home
+                </a>
+
+                <a class="nav-item is-tab" href="{{ url_for('blog') }}">
+                    Blog
+                </a>
+
+                {% if current_user.admin %}
+                <a class="nav-item is-tab" href="{{ url_for('admin_post_list') }}">
+                    Posts
+                </a>
+                <a class="nav-item is-tab" href="{{ url_for('admin_user_list') }}">
+                    Users
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="nav-center nav-menu has-text-left">
+                <h1 class="title is-5">{{ self.title() }}</h1>
+            </div>
+
+            <div class="nav-right nav-icons">
+                <a class="nav-item is-brand" href="https://github.com/adamlamers">
+                    <i class="fa fa-github"></i>
+                </a>
+                <a class="nav-item is-brand" href="https://linkedin.com">
+                    <i class="fa fa-linkedin-square"></i>
+                </a>
+                {% if current_user.is_authenticated() %}
+                <p class="nav-item">
+                <small>Welcome, {{ current_user.name }}</small>
+                </p>
+                <p class="nav-item">
+                    <small><a href="{{ url_for('logout') }}">Logout</a></small>
+                </p>
+                {% else %}
+                <p class="control nav-item">
+                  <input class="input" type="text" placeholder="Search">
+                </p>
+                {% endif %}
+            </div>
+        </nav>
+    </section>
+
+    <section class="section main-section">
+        <div class="container body-container">
+            <div id="flashed-messages" class="content">
+                {% for category, message in get_flashed_messages(with_categories=True) %}
+                <div class="notification is-{{ category }}">
+                    <button class="delete"></button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="columns main-content">
+                <div class="column content main-content-box">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+                <div class="column is-one-quarter sidebar">
+                    {% block sidebar %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content">
+            &copy; 2014-2016 Adam Lamers
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/simplemde.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.1.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/highlight.min.js') }}"></script>
+    <script type="text/javascript">
+    $(function() {
+        $(".delete").click(function(e) {
+            $(this).parent().remove();
+        });
+
+        $(".highlight").each(function(i, block) {
+            hljs.highlightBlock(block);
+        });
+    });
+    </script>
+    {% block javascript %}
+    {% endblock %}
+</body>
+</html>
