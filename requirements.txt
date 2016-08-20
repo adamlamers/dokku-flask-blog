@@ -4,3 +4,4 @@ bcrypt
 markdown
 py-gfm
 peewee
+gunicorn
