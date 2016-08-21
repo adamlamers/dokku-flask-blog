@@ -53,7 +53,7 @@ def user_loader(uid):
 def setup_database():
     database.create_tables([User, Post], safe=True)
 
-    User.create(name="admin", password=bcrypt.hashpw("password", bcrypt.gensalt()), admin=True)
+    User.create(name="admin", password=bcrypt.hashpw(b"password", bcrypt.gensalt()), admin=True)
 
 @app.route('/')
 def index():
