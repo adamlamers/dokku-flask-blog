@@ -216,8 +216,9 @@ def admin_user_save():
         try:
             user_to_edit = User.get(User.id == edit_id)
 
+            hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
             user_to_edit.name = username
-            user_to_edit.password = password
+            user_to_edit.password = hashed_pw
             user_to_edit.admin = is_admin
 
             user_to_edit.save()
