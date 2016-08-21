@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request, url_for, redirect, flash, abort
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from jinja2 import Markup
-from models import User, Post, database
+from models import User, Post, postgres_db
 from functools import wraps
 import json
 import bcrypt
 import markdown
 import datetime
+import peewee
 from mdx_gfm import GithubFlavoredMarkdownExtension as GithubMarkdown
 
 app = Flask(__name__)
@@ -51,9 +52,15 @@ def user_loader(uid):
 
 @app.before_first_request
 def setup_database():
-    database.create_tables([User, Post], safe=True)
+    postgres_db.create_tables([User, Post], safe=True)
 
-    User.create(name="admin", password=bcrypt.hashpw(b"password", bcrypt.gensalt()), admin=True)
+
+@app.route('/init')
+def init_user():
+    try:
+        User.create(name="admin", password=bcrypt.hashpw(b"password", bcrypt.gensalt()), admin=True)
+    except peewee.IntegrityError:
+        pass
 
 @app.route('/')
 def index():
@@ -185,17 +192,45 @@ def admin_user_list():
 def admin_user_create():
     return render_template('edit_user.html', editing=False)
 
+@app.route('/admin/users/edit/<uid>')
+@login_required
+@admin_required
+def admin_user_edit(uid):
+    try:
+        user_to_edit = User.get(User.id == uid)
+    except User.DoesNotExist:
+        abort(404)
+    return render_template('edit_user.html', editing=True, user=user_to_edit)
+
 @app.route('/admin/users/save', methods=["POST"])
 @login_required
 @admin_required
 def admin_user_save():
     username = request.form.get('user-name')
     password = request.form.get('user-password')
+    is_admin = request.form.get('user-is-admin') == 'checked'
+    edit_id = request.form.get('user-edit-id')
 
-    hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-    u = User.create(name=username, password=hashed_pw)
+    if edit_id:
 
-    flash("User created!", "success")
+        try:
+            user_to_edit = User.get(User.id == edit_id)
+
+            user_to_edit.name = username
+            user_to_edit.password = password
+            user_to_edit.admin = is_admin
+
+            user_to_edit.save()
+            flash("User edited", "success")
+        except User.DoesNotExist:
+            abort(404)
+
+    else:
+
+        hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        u = User.create(name=username, password=hashed_pw, admin=is_admin)
+        flash("User created!", "success")
+
     return redirect(url_for('admin_user_list'))
 
 @app.route('/admin/users/delete', methods=["POST"])

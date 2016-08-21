@@ -5,3 +5,4 @@ markdown
 py-gfm
 peewee
 gunicorn
+psycopg2

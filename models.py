@@ -1,8 +1,22 @@
-from peewee import SqliteDatabase, Model, TextField, DateTimeField, ForeignKeyField, BooleanField
+from peewee import PostgresqlDatabase, Model, TextField, DateTimeField, ForeignKeyField, BooleanField
 from datetime import datetime
+from config import Config
 import os
+import urllib.parse
 
-database = SqliteDatabase(os.environ.get("DATABASE_URL"))
+db_parsed_url = urllib.parse.urlparse(Config.DATABASE_URL)
+username = db_parsed_url.username
+password = db_parsed_url.password
+database = db_parsed_url.path[1:]
+hostname = db_parsed_url.hostname
+
+postgres_db = PostgresqlDatabase(
+                database=database,
+                user=username,
+                password=password,
+                host=hostname,
+                autocommit=True,
+                autorollback=True)
 
 class User(Model):
     name = TextField(unique=True)
@@ -26,6 +40,9 @@ class User(Model):
     def is_anonymous(self):
         return False
 
+    class Meta:
+        database = postgres_db
+
 class Post(Model):
     title = TextField()
     description = TextField()
@@ -34,3 +51,6 @@ class Post(Model):
     posted_by = ForeignKeyField(User, related_name='posts')
     created_at = DateTimeField(default=datetime.now)
     updated_at = DateTimeField(default=datetime.now)
+
+    class Meta:
+        database = postgres_db

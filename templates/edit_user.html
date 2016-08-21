@@ -8,6 +8,12 @@
         <div class="panel-heading">
             Options
         </div>
+        <a class="panel-block" href="#">
+            <span class="panel-icon">
+                <i class="fa fa-times"></i>
+            </span>
+            Delete This User
+        </a>
     </div>
 </div>
 {% endblock %}
@@ -16,14 +22,36 @@
 <div class="container">
     <div class="content">
         <form action="{{ url_for('admin_user_save') }}" method="POST" id="user-form">
+            {% if not editing %}
             <label class="label">Create User</label>
+            {% else %}
+            <label class="label">Edit User {{ user.name }}</label>
+            {% endif %}
             <p class="control">
+                {% if not editing %}
                 <input type="text" name="user-name" class="input" placeholder="Username">
+                {% else %}
+                <input type="text" name="user-name" class="input" value="{{ user.name }}">
+                {% endif %}
             </p>
             <p class="control">
-                <input class="input" type="text" name="user-password" placeholder="Password">
+                <input class="input" type="password" name="user-password" placeholder="Password">
+            </p>
+            <p class="control">
+                <label class="checkbox">
+                {% if not editing %}
+                <input type="checkbox" name="user-is-admin">
+                {% else %}
+                <input type="checkbox" name="user-is-admin" {% if user.admin %} checked="checked" {% endif %}>
+                {% endif %}
+                    Administrator Privileges
+                </label>
             </p>
             <div class="has-text-right"><button class="button is-primary">Save</button></div>
+
+            {% if editing %}
+            <input type="hidden" name="user-edit-id" value="{{ user.id }}">
+            {% endif %}
         </form>
     </div>
 
