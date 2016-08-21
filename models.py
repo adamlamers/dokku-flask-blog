@@ -2,7 +2,7 @@ from peewee import SqliteDatabase, Model, TextField, DateTimeField, ForeignKeyFi
 from datetime import datetime
 import os
 
-database = SqliteDatabase(os.environ["POSTGRES_URL"])
+database = SqliteDatabase(os.environ.get("DATABASE_URL"))
 
 class User(Model):
     name = TextField(unique=True)
