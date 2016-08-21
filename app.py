@@ -208,7 +208,7 @@ def admin_user_edit(uid):
 def admin_user_save():
     username = request.form.get('user-name')
     password = request.form.get('user-password')
-    is_admin = request.form.get('user-is-admin') == 'checked'
+    is_admin = request.form.get('user-is-admin') == 'on'
     edit_id = request.form.get('user-edit-id')
 
     if edit_id:
