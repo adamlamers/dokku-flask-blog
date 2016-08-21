@@ -15,6 +15,20 @@
             </span>
             Create Post
         </a>
+
+        <a class="panel-block" href="javascript:void(0);" id="action-delete-post">
+            <span class="panel-icon">
+                <i class="fa fa-times"></i>
+            </span>
+            Delete Post
+        </a>
+
+        <a class="panel-block" href="javascript:void(0);" id="action-edit-post">
+            <span class="panel-icon">
+                <i class="fa fa-pencil"></i>
+            </span>
+            Edit Post
+        </a>
     </div>
 </div>
 {% endblock %}
@@ -31,8 +45,8 @@
         </thead>
         <tbody>
             {% for post in posts %}
-            <tr>
-                <td>{{ post.id }}</td>
+            <tr class="post-row">
+                <td class="post-id">{{ post.id }}</td>
                 <td><a href="{{ url_for('admin_edit_post', pid=post.id) }}">{{ post.title }}</a></td>
                 <td>{{ post.created_at }}</td>
             </tr>
@@ -44,4 +58,54 @@
         </tbody>
     </table>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(function() {
+    var activeRow = null;
+    var activeRowId = null;
+
+    $(".post-row").click(function(e) {
+        var row = $(this);
+
+        if (activeRow)
+            activeRow.removeClass("post-row-active")
+
+        row.addClass("post-row-active");
+        id = row.find(".post-id").html();
+        activeRow = row;
+        activeRowId = id;
+    });
+
+    $("#action-delete-post").click(function(e) {
+
+        if(activeRowId)
+        {
+            if(confirm("Are you sure you want to delete post " + activeRowId + "?"))
+            {
+                $.post("{{ url_for('admin_post_delete') }}", { id: activeRowId }).done(function(e) {
+                    activeRow.remove();
+                })
+            }
+        }
+        else
+        {
+            alert("Select a post to delete.");
+        }
+    });
+
+    $("#action-edit-post").click(function(e) {
+        if(activeRowId)
+        {
+            window.location = "/admin/posts/edit/" + activeRowId;
+        }
+        else
+        {
+            alert("Select a post to edit!");
+        }
+    });
+
+    });
+</script>
 {% endblock %}

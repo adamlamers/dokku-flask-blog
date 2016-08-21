@@ -121,17 +121,20 @@ def view_tag(tag):
 
 @app.route('/admin/preview', methods=["POST"])
 @login_required
+@admin_required
 def preview():
     html = markdown.markdown(request.form['post-content'], extensions=[GithubMarkdown()])
     return html
 
 @app.route('/admin/posts/compose')
 @login_required
+@admin_required
 def compose():
     return render_template('compose.html', editing=False)
 
 @app.route('/admin/posts/edit/<pid>')
 @login_required
+@admin_required
 def admin_edit_post(pid):
     post = None
 
@@ -144,6 +147,7 @@ def admin_edit_post(pid):
 
 @app.route('/admin/posts/save', methods=["POST"])
 @login_required
+@admin_required
 def admin_save_post():
 
     edit_id = request.form.get('post-edit-id')
@@ -177,8 +181,29 @@ def admin_save_post():
 
 @app.route('/admin/posts')
 @login_required
+@admin_required
 def admin_post_list():
     return render_template('post_list.html', posts=Post.select())
+
+@app.route('/admin/posts/delete', methods=["POST"])
+@login_required
+@admin_required
+def admin_post_delete():
+
+    id_to_delete = request.form.get("id")
+
+    if not id_to_delete:
+        abort(400)
+
+    if id_to_delete:
+        try:
+            post_to_delete = Post.get(Post.id==id_to_delete)
+            post_to_delete.delete_instance()
+        except Post.DoesNotExist:
+            abort(404)
+
+    return json.dumps({ "message" : "Deleted post.", "status" : "success"})
+
 
 @app.route('/admin/users')
 @login_required

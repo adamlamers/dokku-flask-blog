@@ -63,7 +63,11 @@ html {
 }
 
 .table-row-active {
-    background-color:#ffaaaa !important;
+    background-color:#bcfffc !important;
+}
+
+.post-row-active {
+    background-color:#bcfffc !important;
 }
 
 .main-section {

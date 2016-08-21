@@ -94,6 +94,17 @@ $(function() {
             alert("Select a user to delete.");
         }
     });
+
+    $("#action-edit-user").click(function(e) {
+        if(activeRowId)
+        {
+            window.location = "/admin/users/edit/ " + activeRowId;
+        }
+        else
+        {
+            alert("Select a user to edit");
+        }
+    });
 });
 </script>
 {% endblock %}
