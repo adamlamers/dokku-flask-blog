@@ -58,7 +58,6 @@ def admin_required(f):
 
 @auth.user_loader
 def user_loader(uid):
-    print(uid)
     user = None
     try:
         user = User.get(User.id == uid)
