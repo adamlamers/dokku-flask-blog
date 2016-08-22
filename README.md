@@ -27,3 +27,8 @@ Installation with Dokku
 5. Visit http://yourapp.com/init
 6. Login with admin/password and change the password or create a new admin user and delete the
    default admin user.
+
+Installation otherwise
+----------------------
+
+You can also just run this app with gunicorn and point a webserver at it, should work just as well.
