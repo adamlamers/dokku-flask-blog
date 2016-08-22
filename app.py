@@ -11,7 +11,6 @@ import peewee
 from mdx_gfm import GithubFlavoredMarkdownExtension as GithubMarkdown
 
 app = Flask(__name__)
-app.secret_key = "ASD"
 app.config.from_object("config.Config")
 
 auth = LoginManager()

@@ -8,6 +8,8 @@ This is a blog engine created with [Flask](http://flask.pocoo.org/) and
 
 This repo is designed to work and be deployed with the [Dokku](http://dokku.io) docker tool.
 
+Don't forget to change SECRET_KEY in config.py if you deploy this on your own server.
+
 Installation with Dokku
 ------------------
 
