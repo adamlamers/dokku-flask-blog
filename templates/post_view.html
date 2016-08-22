@@ -13,8 +13,9 @@
             <a href="{{ url_for('blog') }}"><i class="fa fa-arrow-left"></i>&nbsp; Back to Posts</a>
         </div>
     </div>
+    <h1>{{ post.title }}</h1>
+    <h5>by {{ post.posted_by.name }} on {{ post.created_at.strftime("%B %d, %Y") }}</h5>
     <div class="content post-content">
-        <h1 class="has-underline">{{ post.title }}</h1>
         {{ post.content|Markdown }}
     </div>
 </div>

@@ -24,6 +24,23 @@ auth.login_message_category = "danger"
 def recent_post_context_processor():
     return { 'recent_posts': Post.select().order_by(Post.created_at.desc()).limit(3)}
 
+@app.context_processor
+def top_tags_context_processor():
+    values = {}
+
+    all_tags = {}
+    for post in Post.select():
+        for tag in post.tags.split(';'):
+            if tag in all_tags:
+                all_tags[tag] += 1
+            else:
+                all_tags[tag] = 1
+
+    sorted_tags = ((k, all_tags[k]) for k in sorted(all_tags, key=all_tags.get, reverse=True))
+
+    values['top_tags'] = list(sorted_tags)[0:10]
+    return values
+
 @app.template_filter('Markdown')
 def filter_markdown(raw_markdown):
     return Markup(markdown.markdown(raw_markdown, extensions=[GithubMarkdown()]))
@@ -261,6 +278,7 @@ def admin_user_save():
 
 @app.route('/admin/users/delete', methods=["POST"])
 @login_required
+@admin_required
 def admin_user_delete():
     status = {}
     status['ok'] = True
@@ -278,6 +296,18 @@ def admin_user_delete():
             status['ok'] = False
 
     return json.dumps(status)
+
+@app.route('/admin/settings')
+@login_required
+@admin_required
+def admin_settings():
+    return render_template("admin_settings.html")
+
+@app.route('/admin/settings/save')
+@login_required
+@admin_required
+def admin_settings_save():
+    return ''
 
 if __name__ == '__main__':
     app.debug = True

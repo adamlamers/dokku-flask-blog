@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %} New Post {% endblock %}
+
+{% block sidebar %}
+<div class="content">
+    <div class="panel">
+        <div class="panel-heading">
+            Options
+        </div>
+        <a class="panel-block" href="#">
+            <span class="panel-icon">
+                <i class="fa fa-times"></i>
+            </span>
+            Delete This User
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="content">
+        <form action="{{ url_for('admin_settings_save') }}" method="POST" id="settings-form">
+            <label class="label has-underline">Settings</label>
+            <p class="control">
+                <label class="checkbox">
+                    checkbox
+                <input type="checkbox" name="user-is-admin">
+                </label>
+            </p>
+            <div class="has-text-right"><button class="button is-primary">Save</button></div>
+        </form>
+    </div>
+
+    <div class="box" id="preview-box" style="display:none;">
+        <div class="preview-post content">
+            <a name="view-preview"></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

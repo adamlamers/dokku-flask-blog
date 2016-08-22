@@ -18,7 +18,7 @@
         <nav class="level">
             <div class="level-left">
                 <span class="level-item">
-                    <i class="fa fa-clock-o"></i> Posted on {{ post.created_at }}
+                    <i class="fa fa-clock-o"></i> Posted on {{ post.created_at.strftime("%a, %d %B %Y") }} by {{ post.posted_by.name }}
                 </span>
             </div>
         </nav>

@@ -73,6 +73,10 @@ html {
 .main-section {
 }
 
+.post-heading a {
+    border-bottom:none !important;
+}
+
 .post-content img {
     display:block;
     margin:0 auto;
