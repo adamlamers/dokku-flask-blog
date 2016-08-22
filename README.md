@@ -10,6 +10,13 @@ This repo is designed to work and be deployed with the [Dokku](http://dokku.io) 
 
 Don't forget to change SECRET_KEY in config.py if you deploy this on your own server.
 
+## Features
+
+* GitHub flavored markdown in posts.
+* Highlight.js on code blocks out of the box.
+* Post tagging.
+* idk
+
 Installation with Dokku
 ------------------
 
