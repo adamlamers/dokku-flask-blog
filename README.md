@@ -17,6 +17,18 @@ Don't forget to change SECRET_KEY in config.py if you deploy this on your own se
 * Post tagging.
 * idk
 
+Local Development
+------------------
+Set environment variable DATABASE_URL to point to a valid postgresql instance.
+
+    export DATABASE_URL=postgresql://localhost/blog
+
+Then run:
+
+    python app.py
+
+to start a development server.
+
 Installation with Dokku
 ------------------
 
