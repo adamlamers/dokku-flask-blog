@@ -45,12 +45,12 @@ def top_tags_context_processor():
 def settings_context_processor():
     settings = None
     try:
-        settings = Settings.get(Settings.id == 1)
+        settings = model_to_dict(Settings.get(Settings.id == 1))
     except Settings.DoesNotExist:
         settings = {}
 
     values = {}
-    values['settings'] = model_to_dict(settings)
+    values['settings'] = settings
     return values
 
 @app.template_filter('Markdown')
