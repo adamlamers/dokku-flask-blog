@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, flash, abort
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from jinja2 import Markup
-from models import User, Post, postgres_db
+from models import User, Post, Settings, postgres_db
 from functools import wraps
 import json
 import bcrypt
@@ -67,8 +67,7 @@ def user_loader(uid):
 
 @app.before_first_request
 def setup_database():
-    postgres_db.create_tables([User, Post], safe=True)
-
+    postgres_db.create_tables([User, Post, Settings], safe=True)
 
 @app.route('/init')
 def init_user():
@@ -219,7 +218,6 @@ def admin_post_delete():
 
     return json.dumps({ "message" : "Deleted post.", "status" : "success"})
 
-
 @app.route('/admin/users')
 @login_required
 @admin_required
@@ -299,13 +297,27 @@ def admin_user_delete():
 @login_required
 @admin_required
 def admin_settings():
-    return render_template("admin_settings.html")
+    current_settings = None
+    try:
+        current_settings = Settings.get(Settings.id == 1)
+    except Settings.DoesNotExist:
+        current_settings = Settings.create(blog_title="Blog",
+                                           initialized=True,
+                                           icon_1_link='',
+                                           icon_1_icon_type='github',
+                                           icon_2_link='',
+                                           icon_2_icon_type='linkedin',
+                                           posts_per_page=10,
+                                           number_of_recent_posts=5,
+                                           max_synopsis_chars=500)
 
-@app.route('/admin/settings/save')
+    return render_template("admin_settings.html", current_settings=current_settings)
+
+@app.route('/admin/settings/save', methods=["POST"])
 @login_required
 @admin_required
 def admin_settings_save():
-    return ''
+    return json.dumps(request.form)
 
 if __name__ == '__main__':
     app.debug = True

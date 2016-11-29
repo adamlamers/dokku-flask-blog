@@ -8,12 +8,14 @@
         <div class="panel-heading">
             Options
         </div>
+        <!--
         <a class="panel-block" href="#">
             <span class="panel-icon">
                 <i class="fa fa-times"></i>
             </span>
             Delete This User
         </a>
+        -->
     </div>
 </div>
 {% endblock %}
@@ -23,12 +25,47 @@
     <div class="content">
         <form action="{{ url_for('admin_settings_save') }}" method="POST" id="settings-form">
             <label class="label has-underline">Settings</label>
+
             <p class="control">
-                <label class="checkbox">
-                    checkbox
-                <input type="checkbox" name="user-is-admin">
-                </label>
+                <label class="label">Title</label>
+                <input type="text" class="input" name="blog-title" value="{{current_settings.blog_title }}">
             </p>
+
+            <p class="control">
+                <label class="label">Posts Per Page</label>
+                <input type="text" class="input" name="posts-per-page" value="{{current_settings.posts_per_page}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Number of Recent Posts to Display</label>
+                <input type="text" class="input" name="number-of-recent-posts" value="{{current_settings.number_of_recent_posts}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Max Characters in Synposis</label>
+                <input type="text" class="input" name="max-synopsis-chars" value={{current_settings.max_synopsis_chars}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Icon 1 Link</label>
+                <input type="text" class="input" name="icon-1-link" value="{{current_settings.icon_1_link}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Icon 1 Fontawesome Icon</label>
+                <input type="text" class="input" name="icon-1-icon-type" value="{{current_settings.icon_1_icon_type}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Icon 2 Link</label>
+                <input type="text" class="input" name="icon-2-link" value="{{current_settings.icon_2_link}}">
+            </p>
+
+            <p class="control">
+                <label class="label">Icon 2 Fontawesome Icon</label>
+                <input type="text" class="input" name="icon-2-icon-type" value="{{current_settings.icon_2_icon_type}}">
+            </p>
+
             <div class="has-text-right"><button class="button is-primary">Save</button></div>
         </form>
     </div>
