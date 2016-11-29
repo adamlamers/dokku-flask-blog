@@ -9,6 +9,7 @@ import markdown
 import datetime
 import peewee
 from mdx_gfm import GithubFlavoredMarkdownExtension as GithubMarkdown
+from playhouse.shortcuts import model_to_dict
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
@@ -38,6 +39,18 @@ def top_tags_context_processor():
     sorted_tags = ((k, all_tags[k]) for k in sorted(all_tags, key=all_tags.get, reverse=True))
 
     values['top_tags'] = list(sorted_tags)[0:10]
+    return values
+
+@app.context_processor
+def settings_context_processor():
+    settings = None
+    try:
+        settings = Settings.get(Settings.id == 1)
+    except Settings.DoesNotExist:
+        settings = {}
+
+    values = {}
+    values['settings'] = model_to_dict(settings)
     return values
 
 @app.template_filter('Markdown')
@@ -310,6 +323,7 @@ def admin_settings():
                                            posts_per_page=10,
                                            number_of_recent_posts=5,
                                            max_synopsis_chars=500)
+        current_settings.save()
 
     return render_template("admin_settings.html", current_settings=current_settings)
 
@@ -317,8 +331,24 @@ def admin_settings():
 @login_required
 @admin_required
 def admin_settings_save():
-    return json.dumps(request.form)
+    current_settings = None
+    try:
+        current_settings = Settings.get(Settings.id == 1)
+        current_settings.blog_title = request.form.get('blog-title')
+        current_settings.icon_1_link = request.form.get('icon-1-link')
+        current_settings.icon_1_icon_type = request.form.get('icon-1-icon-type')
+        current_settings.icon_2_link = request.form.get('icon-2-link')
+        current_settings.icon_2_icon_type = request.form.get('icon-2-icon-type')
+        current_settings.posts_per_page = request.form.get('posts-per-page')
+        current_settings.number_of_recent_posts = request.form.get('number-of-recent-posts')
+        current_settings.max_synopsis_chars = request.form.get('max-synopsis-chars')
+        current_settings.save()
 
+        flash("Settings updated.", "success")
+    except Settings.DoesNotExist:
+        flash("Please try again.", "danger")
+
+    return redirect(url_for('admin_settings'))
 if __name__ == '__main__':
     app.debug = True
     app.run()

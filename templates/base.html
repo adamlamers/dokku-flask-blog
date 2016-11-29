@@ -62,11 +62,11 @@
             </div>
 
             <div class="nav-right nav-icons">
-                <a class="nav-item is-brand" href="https://github.com/adamlamers">
-                    <i class="fa fa-github"></i>
+                <a class="nav-item is-brand" href="{{settings.icon_1_link}}">
+                    <i class="fa fa-{{settings.icon_1_icon_type}}"></i>
                 </a>
-                <a class="nav-item is-brand" href="https://linkedin.com">
-                    <i class="fa fa-linkedin-square"></i>
+                <a class="nav-item is-brand" href="{{settings.icon_2_link}}">
+                    <i class="fa fa-{{settings.icon_2_icon_type}}"></i>
                 </a>
                 {% if current_user.is_authenticated %}
                 <p class="nav-item">
