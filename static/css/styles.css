@@ -42,6 +42,10 @@ html {
     border-top: 1px solid #d2d2d2;
 }
 
+.top-tags {
+    line-height:225%;
+}
+
 .blog-post-card:hover {
     background-color:#f5f7fa;
 }
