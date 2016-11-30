@@ -21,7 +21,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Adam's Blog :: {% block title %} UNDEFINED {%endblock %}</title>
+    <title>{{ settings.blog_title }} :: {% block title %} UNDEFINED {%endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}" media="all">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" media="all">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/simplemde.min.css') }}" media="all">
@@ -34,7 +34,7 @@
         <nav class="nav">
             <div class="nav-left">
                 <a class="nav-item is-brand">
-                    <span class="logo-text">Adam's Blog ::</span>
+                    <span class="logo-text">{{ settings.blog_title }} ::</span>
                 </a>
                 <a class="nav-item is-tab" href="/">
                     Home
