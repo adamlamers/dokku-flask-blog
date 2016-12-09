@@ -94,11 +94,13 @@ html {
     color: #ccc;
     border-radius:2px;
     padding: 0.1em 0.5em 0.1em 0.5em;
-    margin: 0.1em 0.5em 0.1em 0.5em;
 }
 
 .post-content pre {
-    background-color:#fff;
+    background-color: #424242;
+    border-radius: 2px;
+    padding: 1em 0.2em 0.2em 0.1em;
+    margin-bottom: 1em;
 }
 
 .post-content>h1,h2,h3,h4,h5,h6 {
