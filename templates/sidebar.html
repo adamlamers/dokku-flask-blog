@@ -4,7 +4,7 @@
         <div class="column is-1"></div>
         <div class="column">
             {% for post in recent_posts %}
-                <a class="large-sidebar-link" href="{{ url_for('post', pid=post.id) }}">{{ post.title }}</a>
+                <a class="large-sidebar-link" href="{{ url_for('post', pid=post.id, slug=post.slug) }}">{{ post.title }}</a>
             {% endfor %}
         </div>
     </div>
