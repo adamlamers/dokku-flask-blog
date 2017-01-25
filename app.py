@@ -8,8 +8,10 @@ import bcrypt
 import markdown
 import datetime
 import peewee
+import math
 from mdx_gfm import GithubFlavoredMarkdownExtension as GithubMarkdown
 from playhouse.shortcuts import model_to_dict
+import util
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
@@ -22,7 +24,9 @@ auth.login_message_category = "danger"
 
 @app.context_processor
 def recent_post_context_processor():
-    return { 'recent_posts': Post.select().order_by(Post.created_at.desc()).limit(3)}
+    settings = util.get_current_settings()
+    return { 'recent_posts':
+            Post.select().order_by(Post.created_at.desc()).limit(settings.number_of_recent_posts)}
 
 @app.context_processor
 def top_tags_context_processor():
@@ -43,11 +47,7 @@ def top_tags_context_processor():
 
 @app.context_processor
 def settings_context_processor():
-    settings = None
-    try:
-        settings = model_to_dict(Settings.get(Settings.id == 1))
-    except Settings.DoesNotExist:
-        settings = {}
+    settings = model_to_dict(util.get_current_settings())
 
     values = {}
     values['settings'] = settings
@@ -127,12 +127,20 @@ def do_login():
     return redirect(url_for('login'))
 
 @app.route('/blog')
-def blog():
-    posts = Post.select().order_by(Post.created_at.desc()).limit(5)
-    return render_template('blog_list.html', posts=posts)
+@app.route('/blog/archive/<int:page>')
+def blog(page=0):
+    settings = util.get_current_settings()
+
+    posts = Post.select().order_by(Post.created_at.desc()).paginate(page,
+            settings.posts_per_page)
+    last_page = math.ceil(Post.select().count() / settings.posts_per_page)
+    print(last_page)
+
+    return render_template('blog_list.html', posts=posts, page=page, last_page=last_page)
 
 @app.route('/post/<int:pid>')
-def post(pid):
+@app.route('/post/<int:pid>/<slug>')
+def post(pid, slug=None):
     post = None
     try:
         post = Post.get(Post.id == pid)
@@ -179,6 +187,7 @@ def admin_save_post():
 
     edit_id = request.form.get('post-edit-id')
     title = request.form.get('post-title')
+    slug = util.slugify(title)
     content = request.form.get('post-content')
     description = request.form.get('post-description')
     tags = request.form.get('post-tags')
@@ -187,6 +196,7 @@ def admin_save_post():
         post = Post(title=title,
                     content=content,
                     tags=tags,
+                    slug=slug,
                     description=description,
                     posted_by=current_user.id)
         post.save()
@@ -196,6 +206,7 @@ def admin_save_post():
 
             post.title = title
             post.content = content
+            post.slug = slug
             post.description = description
             post.tags = tags
             post.updated_at = datetime.datetime.now()
@@ -310,20 +321,7 @@ def admin_user_delete():
 @login_required
 @admin_required
 def admin_settings():
-    current_settings = None
-    try:
-        current_settings = Settings.get(Settings.id == 1)
-    except Settings.DoesNotExist:
-        current_settings = Settings.create(blog_title="Blog",
-                                           initialized=True,
-                                           icon_1_link='',
-                                           icon_1_icon_type='github',
-                                           icon_2_link='',
-                                           icon_2_icon_type='linkedin',
-                                           posts_per_page=10,
-                                           number_of_recent_posts=5,
-                                           max_synopsis_chars=500)
-        current_settings.save()
+    current_settings = util.get_current_settings()
 
     return render_template("admin_settings.html", current_settings=current_settings)
 

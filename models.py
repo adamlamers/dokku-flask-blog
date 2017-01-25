@@ -49,6 +49,7 @@ class Post(Model):
     description = TextField()
     content = TextField()
     tags = TextField()
+    slug = TextField()
     posted_by = ForeignKeyField(User, related_name='posts')
     created_at = DateTimeField(default=datetime.now)
     updated_at = DateTimeField(default=datetime.now)
