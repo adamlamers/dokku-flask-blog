@@ -128,7 +128,7 @@ def do_login():
 
 @app.route('/blog')
 @app.route('/blog/archive/<int:page>')
-def blog(page=0):
+def blog(page=1):
     settings = util.get_current_settings()
 
     posts = Post.select().order_by(Post.created_at.desc()).paginate(page,
