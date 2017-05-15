@@ -52,20 +52,22 @@
 {% endfor %}
 <!-- end post box -->
 <nav class="pagination">
-    <a class="pagination-previous{% if page <= 1 %} is-disabled {% endif %}"
-       href="{{ url_for('blog', page=page-1) }}">
+    <a class="pagination-previous{% if pages.has_prev %} is-disabled {% endif %}"
+       href="{{ url_for('blog', page=pages[0].number-1) }}">
       Newer
   </a>
 
-  <a class="pagination-next {% if page >= last_page %} is-disabled {% endif %}"
-     href="{{ url_for('blog', page=page+1) }}">
+  <a class="pagination-next {% if pages.has_next %} is-disabled {% endif %}"
+     href="{{ url_for('blog', page=pages[-1].number+1) }}">
     Older
   </a>
 
   <ul class="pagination-list">
+    {% for page in pages.elements %}
     <li>
-        <a class="pagination-link">{{ page }}</a>
+        <a class="pagination-link" href="{{ url_for('blog', page=page.number) }}">{{ page }}</a>
     </li>
+    {% endfor %}
   </ul>
 </nav>
 {% endblock %}

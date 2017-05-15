@@ -11,6 +11,7 @@ import peewee
 import math
 from mdx_gfm import GithubFlavoredMarkdownExtension as GithubMarkdown
 from playhouse.shortcuts import model_to_dict
+from pagination import Pagination
 import util
 
 app = Flask(__name__)
@@ -126,17 +127,20 @@ def do_login():
 
     return redirect(url_for('login'))
 
-@app.route('/blog')
+@app.route('/blog', defaults={'page' : 1})
 @app.route('/blog/archive/<int:page>')
-def blog(page=1):
+def blog(page):
     settings = util.get_current_settings()
 
     posts = Post.select().order_by(Post.created_at.desc()).paginate(page,
             settings.posts_per_page)
-    last_page = math.ceil(Post.select().count() / settings.posts_per_page)
-    print(last_page)
 
-    return render_template('blog_list.html', posts=posts, page=page, last_page=last_page)
+    total_posts = Post.select().count()
+    pages = Pagination(page, settings.posts_per_page, total_posts, 7)
+    print(page)
+    print([x.number for x in pages])
+
+    return render_template('blog_list.html', posts=posts, pages=pages)
 
 @app.route('/post/<int:pid>')
 @app.route('/post/<int:pid>/<slug>')
